@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login Page</title>
+    <meta name="description" content="Login Page" />
+    <link rel="icon" type="image/x-icon" href="/favicon_io/favicon-16x16.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-container h1 {
+            margin-bottom: 20px;
+            color: #19c1f4;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-input {
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-button {
+            padding: 12px;
+            background-color: #6df108;
+            color: rgb(240, 238, 238);
+            border: none;
+            border-radius: 4px;
+
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-button:hover {
+            background-color: #1565C0;
+        }
+
+        .form-button:active {
+            transform: translateX(-5px);
+            /* Move button to the left when clicked */
+        }
+
+        .form-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <div class="login-form">
+            <input id="username" type="text" class="form-input" placeholder="Username" oninput="enableLogin()">
+            <input id="password" type="password" class="form-input" placeholder="Password" oninput="enableLogin()">
+            <button onclick="login()" class="form-button" disabled>Login</button>
+        </div>
+    </div>
+
+    <script>
+        function enableLogin() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const loginButton = document.querySelector('.form-button');
+
+            if (username.trim() !== '' && password.trim() !== '') {
+                loginButton.removeAttribute('disabled');
+            } else {
+                loginButton.setAttribute('disabled', true);
+            }
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Fetch the user credentials from the JSON file
+            fetch('credentials.json')
+                .then(response => response.json())
+                .then(data => {
+                    const user = data.users.find(u => u.username === username && u.password === password);
+
+                    if (user) {
+                        // Set a flag in sessionStorage to indicate successful login
+                        sessionStorage.setItem("isLoggedIn", true);
+
+                        // Redirect to the gallery page
+                        window.location.href = "index.html"; // Replace with your gallery page URL
+                    } else {
+                        // Show an alert for unsuccessful login
+                        alert("Incorrect username or password. Please try again.");
+
+                        // Add animation to the button if login fails
+                        const loginButton = document.querySelector('.form-button');
+                        loginButton.style.transition = 'none';
+                        loginButton.style.transform = 'translateX(5px)';
+                        void loginButton.offsetWidth; // Trigger reflow
+                        loginButton.style.transition = 'transform 0.3s ease';
+                        loginButton.style.transform = 'translateX(0)';
+                    }
+                })
+                .catch(error => console.error('Error fetching user credentials:', error));
+        }
+    </script>
+</body>
+
+</html>

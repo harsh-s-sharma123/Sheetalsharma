@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Lavesh &amp; Namrata</title>
+
+  <!-- Add meta description for SEO -->
+  <meta name="description" content="Photo gallery of Lavesh and Namrata's wedding" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon_io/favicon-16x16.png" />
+  <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.css" />
+  <script>document.addEventListener("DOMContentLoaded", function () { lozad(); });</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery.js/1.6.8/css/lightgallery.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+
+  <style>
+    /* Your existing styles here */
+
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #ff000099;
+    }
+
+    .card {
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: transform 0.2s ease-in-out;
+      /* Smooth transition for the transform property */
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: -8px;
+      /* Negative margin to counter padding on columns */
+    }
+
+    .column {
+      flex: 25%;
+      max-width: 25%;
+      padding: 8px;
+      box-sizing: border-box;
+      transition: transform 0.2s ease-in-out;
+      /* Smooth transition for the transform property */
+    }
+
+    .column:hover {
+      transform: scale(1.05);
+      /* Scale the column on hover */
+      z-index: 1;
+      /* Ensure the column is always on top */
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      /* Add a subtle shadow */
+      border-radius: 10px;
+    }
+
+    .column img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      border-radius: 10px;
+      display: block;
+      /* Ensure the image is clickable */
+      filter: grayscale(0);
+      /* Reset grayscale filter */
+      transition: transform 0.2s ease-in-out;
+      /* Smooth transition for the transform property */
+    }
+
+    .column:hover img {
+      filter: grayscale(1);
+      /* Apply grayscale filter on hover */
+      transform: scale(1.05);
+      /* Scale the image on hover */
+      z-index: 1;
+      /* Ensure the image is always on top */
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      /* Add a subtle shadow */
+      border-radius: 10px;
+    }
+
+    @media screen and (max-width: 800px) {
+      .column {
+        flex: 50%;
+        max-width: 50%;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .column {
+        flex: 100%;
+        max-width: 100%;
+      }
+    }
+
+    .pagination-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .pagination-container select {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .preview-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      /* Prevent scrolling of the background content */
+      z-index: 1000;
+      /* Set a higher z-index to ensure the modal is on top */
+    }
+
+    .preview-content {
+      position: relative;
+      width: 80%;
+      max-width: 800px;
+      overflow: hidden;
+      /* Hide any content overflow from the modal */
+    }
+
+    .preview-image {
+      width: 100%;
+      height: auto;
+      /* Auto height to maintain the aspect ratio */
+      max-height: 80vh;
+      /* Set maximum height to 80% of the viewport height */
+      object-fit: contain;
+      /* Maintain image aspect ratio */
+      border-radius: 10px;
+      /* Add rounded corners */
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .close-button:hover {
+      color: #1f05e1;
+      /* Add a hover effect to the close button */
+    }
+
+    .download-preview-button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .download-preview-button {
+      background-color: #2196F3;
+      /* Blue background */
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+      text-align: center;
+      /* Center the button text */
+      transition: background-color 0.3s ease;
+      /* Smooth transition for background color */
+    }
+
+    .download-preview-button:active {
+      background-color: #1f05e1;
+      /* Darker blue background on click */
+    }
+
+    .download-preview-button:hover {
+      background-color: #1cf608;
+      /* Green background on hover */
+    }
+
+    .download-progress {
+      margin-top: 10px;
+      color: white;
+      font-size: 14px;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if the user is logged in
+      const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+
+      if (!isLoggedIn) {
+        // User is not logged in, redirect to the login page
+        window.location.href = "login.html"; // Replace with your login page URL
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="card img" style="background-color: antiquewhite; text-align: center; margin: 0; padding: 20px;">
+    <h1><a href="https://ankitnam.netlify.app/">Ankit- Namrata</a></h1>
+  </div>
+
+  <div class="row">
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const rowContainer = document.querySelector('.row');
+        const previewModal = document.querySelector('.preview-modal');
+        const previewImage = document.querySelector('.preview-image');
+        const downloadProgress = document.querySelector('.download-progress');
+
+        const createImage = (i) => {
+          const column = document.createElement('div');
+          column.classList.add('column');
+
+          const image = document.createElement('img');
+          image.classList.add('lozad', 'card');
+          image.alt = `Mobile Photo ${i}`; // Add alt text
+
+          image.setAttribute('data-src', `pics/Mobile(${i}).JPG`);
+          image.setAttribute('data-sizes', 'auto');
+          image.setAttribute('data-loaded', 'false');
+
+          image.addEventListener('error', () => {
+            image.style.display = 'none';
+            checkIfImagesAvailable();
+          });
+
+          image.addEventListener('click', () => {
+            previewImage.src = image.src;
+            previewModal.style.display = 'flex';
+          });
+
+          column.appendChild(image);
+          rowContainer.appendChild(column);
+        };
+
+        const checkIfImagesAvailable = () => {
+          const images = rowContainer.querySelectorAll('img');
+          const hasVisibleImages = Array.from(images).some(img => img.style.display !== 'none');
+
+          if (!hasVisibleImages) {
+            rowContainer.style.display = 'none';
+          }
+        };
+
+        let i = 1;
+        while (i <= 10) {
+          createImage(i);
+          i++;
+        }
+
+        // Check if there are images before applying styles
+        checkIfImagesAvailable();
+
+        const observer = lozad();
+        observer.observe();
+
+        // Close preview modal
+        const closeButton = document.querySelector('.close-button');
+        closeButton.addEventListener('click', () => {
+          previewModal.style.display = 'none';
+        });
+
+        // Download preview button
+        const downloadPreviewButton = document.querySelector('.download-preview-button');
+        downloadPreviewButton.addEventListener('click', () => {
+          // Simulate download progress
+          downloadProgress.textContent = 'Downloading...';
+          setTimeout(() => {
+            downloadProgress.textContent = 'Download complete!';
+          }, 2000);
+
+          const a = document.createElement('a');
+          a.href = previewImage.src;
+          a.download = 'preview_image.jpg';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+      });
+    </script>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="preview-modal">
+    <div class="preview-content">
+      <span class="close-button">&times;</span>
+      <img class="preview-image" alt="Preview Image">
+      <div class="download-progress"></div>
+      <button class="download-preview-button">Download Preview</button>
+    </div>
+  </div>
+
+  <!-- Lightgallery Scripts -->
+  <script src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/lightgallery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/plugins/lg-thumbnail.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.10.0/js/plugins/lg-zoom.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const gallery = document.querySelector('.row');
+      lightGallery(gallery, {
+        selector: '.lozad',
+        download: false, // Disable default download button
+      });
+    });
+  </script>
+</body>
+
+</html>
